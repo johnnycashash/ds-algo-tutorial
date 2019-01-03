@@ -9,11 +9,13 @@ public class TestArrayStack {
         Employee c = new Employee(3, "FCCC", "LCCC");
         Employee d = new Employee(4, "FDDD", "LDDD");
 
-        ArrayStack arrayStack=new ArrayStack(4);
+        ArrayStack arrayStack=new ArrayStack(3);
         arrayStack.push(a);
         arrayStack.push(b);
         arrayStack.push(c);
+        System.out.println(arrayStack.getStack().length);
         arrayStack.push(d);
+        System.out.println(arrayStack.getStack().length);
         //arrayStack.printStack();
         //System.out.println(arrayStack.peek());
         //arrayStack.printStack();
