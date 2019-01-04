@@ -42,5 +42,6 @@ public class EmployeeLinkedList {
 
     public boolean isEmpty() {
         return head == null;
+        //or size is 0
     }
 }
