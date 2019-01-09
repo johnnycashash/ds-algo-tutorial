@@ -1,6 +1,4 @@
-package com.ds.algo.stack.linkedlist;
-
-import com.ds.algo.Employee;
+package com.ds.algo.datastructures.stack.linkedlist;
 
 public class TestLinkedStack {
     public static void main(String[] args) {

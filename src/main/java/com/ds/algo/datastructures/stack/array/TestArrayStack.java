@@ -1,6 +1,4 @@
-package com.ds.algo.stack.array;
-
-import com.ds.algo.Employee;
+package com.ds.algo.datastructures.stack.array;
 
 public class TestArrayStack {
     public static void main(String[] args) {

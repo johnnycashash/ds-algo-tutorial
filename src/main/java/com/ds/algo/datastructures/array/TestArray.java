@@ -1,4 +1,4 @@
-package com.ds.algo.array;
+package com.ds.algo.datastructures.array;
 
 public class TestArray {
     public static void main(String[] args) {

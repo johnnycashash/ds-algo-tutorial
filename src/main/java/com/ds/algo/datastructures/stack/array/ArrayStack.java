@@ -1,6 +1,5 @@
-package com.ds.algo.stack.array;
+package com.ds.algo.datastructures.stack.array;
 
-import com.ds.algo.Employee;
 
 import java.util.EmptyStackException;
 

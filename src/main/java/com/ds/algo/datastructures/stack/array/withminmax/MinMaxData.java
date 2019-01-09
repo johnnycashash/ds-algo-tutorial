@@ -1,4 +1,4 @@
-package com.ds.algo.stack.array.withminmax;
+package com.ds.algo.datastructures.stack.array.withminmax;
 
 class MinMaxData {
     int data;

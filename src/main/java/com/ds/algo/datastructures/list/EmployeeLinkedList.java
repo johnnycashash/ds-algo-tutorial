@@ -1,6 +1,4 @@
-package com.ds.algo.list;
-
-import com.ds.algo.Employee;
+package com.ds.algo.datastructures.list;
 
 public class EmployeeLinkedList {
     private EmployeeNode head;

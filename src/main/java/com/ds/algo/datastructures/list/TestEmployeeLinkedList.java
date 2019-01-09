@@ -1,6 +1,4 @@
-package com.ds.algo.list;
-
-import com.ds.algo.Employee;
+package com.ds.algo.datastructures.list;
 
 public class TestEmployeeLinkedList {
     public static void main(String[] args) {

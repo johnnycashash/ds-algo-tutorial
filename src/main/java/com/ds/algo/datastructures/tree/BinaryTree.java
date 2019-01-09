@@ -1,6 +1,5 @@
-package com.ds.algo.tree;
+package com.ds.algo.datastructures.tree;
 
-import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.Queue;
 

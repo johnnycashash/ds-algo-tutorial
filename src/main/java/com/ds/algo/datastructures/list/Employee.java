@@ -1,4 +1,4 @@
-package com.ds.algo;
+package com.ds.algo.datastructures.list;
 
 import java.util.Objects;
 

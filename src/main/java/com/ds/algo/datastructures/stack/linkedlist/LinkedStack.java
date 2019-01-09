@@ -1,6 +1,4 @@
-package com.ds.algo.stack.linkedlist;
-
-import com.ds.algo.Employee;
+package com.ds.algo.datastructures.stack.linkedlist;
 
 import java.util.LinkedList;
 import java.util.ListIterator;

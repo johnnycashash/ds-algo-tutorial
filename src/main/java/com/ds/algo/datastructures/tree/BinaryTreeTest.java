@@ -1,4 +1,4 @@
-package com.ds.algo.tree;
+package com.ds.algo.datastructures.tree;
 
 public class BinaryTreeTest {
     public static void main(String[] args) {
