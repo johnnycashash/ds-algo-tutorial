@@ -6,8 +6,27 @@ import java.util.Queue;
 public class BinaryTree {
     Node root;
 
-    static void insert(Node temp, int key)
-    {
+    public void insert(int value) {
+        if (root == null) {
+            root = new Node(value);
+        } else {
+            root.insert(value);
+        }
+    }
+
+    public void inorderTraversal() {
+        root.inorderTraversal();
+    }
+    public void preorderTraversal() {
+        root.preorderTraversal();
+    }
+    public void postorderTraversal() {
+        root.postorderTraversal();
+    }
+}
+
+/*
+    static void insert(Node temp, int key) {
         Queue<Node> q = new LinkedList<Node>();
         q.add(temp);
 
@@ -71,5 +90,4 @@ public class BinaryTree {
             postorderTraversal(root.right);
             System.out.println(root.getData());
         }
-    }
-}
+    }*/
