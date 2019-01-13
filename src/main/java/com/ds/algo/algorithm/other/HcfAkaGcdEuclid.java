@@ -1,4 +1,4 @@
-package com.ds.algo.algorithm;
+package com.ds.algo.algorithm.other;
 
 public class HcfAkaGcdEuclid {
     public static int gcdRecursion(int a, int b) {

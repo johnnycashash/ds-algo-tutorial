@@ -1,4 +1,4 @@
-package com.ds.algo.algorithm;
+package com.ds.algo.algorithm.other;
 
 public class Lcm {
     public static int findLCM(int a, int b) {

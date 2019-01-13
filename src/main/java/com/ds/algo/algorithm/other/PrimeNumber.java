@@ -1,4 +1,4 @@
-package com.ds.algo.algorithm;
+package com.ds.algo.algorithm.other;
 
 import java.util.stream.IntStream;
 
