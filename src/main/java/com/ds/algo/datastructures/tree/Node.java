@@ -37,6 +37,7 @@ class Node {
             right.inorderTraversal();
         }
     }
+
     public void preorderTraversal() {
         System.out.println(data);
         if (left != null) {
@@ -56,6 +57,7 @@ class Node {
         }
         System.out.println(data);
     }
+
     public int getData() {
         return data;
     }

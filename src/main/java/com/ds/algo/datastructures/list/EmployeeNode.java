@@ -5,7 +5,7 @@ public class EmployeeNode {
     EmployeeNode next;
 
     public EmployeeNode(Employee employee) {
-        this.employee=employee;
+        this.employee = employee;
     }
 
     public Employee getEmployee() {

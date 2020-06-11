@@ -1,8 +1,5 @@
 package com.ds.algo.datastructures.tree;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 public class BinaryTree {
     Node root;
 
@@ -17,9 +14,11 @@ public class BinaryTree {
     public void inorderTraversal() {
         root.inorderTraversal();
     }
+
     public void preorderTraversal() {
         root.preorderTraversal();
     }
+
     public void postorderTraversal() {
         root.postorderTraversal();
     }

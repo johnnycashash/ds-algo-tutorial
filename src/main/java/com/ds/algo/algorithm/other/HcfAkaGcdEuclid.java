@@ -17,6 +17,7 @@ public class HcfAkaGcdEuclid {
         }
         return a;
     }
+
     //Euclid theorem says gcd(a,b) = gcd(b,a%b)
     //and gcd(a,0) = a
     //using above two concept this algo is produced

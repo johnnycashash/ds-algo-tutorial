@@ -22,8 +22,8 @@ public class PrimeNumber {
 
     public static void printPrime(int end) {
         for (int i = 1; i < end; i++) {
-            if(isPrime(i)){
-                System.out.print(i+" ");
+            if (isPrime(i)) {
+                System.out.print(i + " ");
             }
         }
     }

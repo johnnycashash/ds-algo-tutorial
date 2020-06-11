@@ -16,7 +16,7 @@ public class ArrayStack {
             //need to resize backing array
             Employee[] newArray = new Employee[2 * stack.length];
             System.arraycopy(stack, 0, newArray, 0, stack.length);
-            stack=newArray;
+            stack = newArray;
         }
         stack[top++] = employee;
     }

@@ -7,7 +7,7 @@ public class TestArrayStack {
         Employee c = new Employee(3, "FCCC", "LCCC");
         Employee d = new Employee(4, "FDDD", "LDDD");
 
-        ArrayStack arrayStack=new ArrayStack(3);
+        ArrayStack arrayStack = new ArrayStack(3);
         arrayStack.push(a);
         arrayStack.push(b);
         arrayStack.push(c);
