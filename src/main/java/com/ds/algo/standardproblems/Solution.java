@@ -101,6 +101,40 @@ public class Solution {
         return maxLength;
     }
 
+    public int longestCommonSubstring(String s1, String s2) {
+        int n = s1.length(), m = s2.length();
+        int[][] dp = new int[n + 1][m + 1];
+        int maxLen = 0;
+// int endIndex=0;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                    maxLen = Math.max(maxLen, dp[i][j]);
+                }
+            }
+        }
+//        return s1.substring(endIndex - maxLen, endIndex);
+
+        return maxLen;
+    }
+
+    public int longestCommonSubsequence(String s1, String s2) {
+        int n = s1.length(), m = s2.length();
+        int[][] dp = new int[n + 1][m + 1];
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[n][m];
+    }
+
     static int lcsubstring(String text1, String text2) {
         int[][] dp = new int[text1.length() + 1][text2.length() + 1];
         int result = 0;
@@ -115,7 +149,7 @@ public class Solution {
         return result;
     }
 
-    public static int longestCommonSubsequence(String text1, String text2) {
+    public static int lcSubsequence(String text1, String text2) {
 
         int[][] dp = new int[text1.length() + 1][text2.length() + 1];
 
