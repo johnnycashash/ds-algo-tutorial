@@ -1,56 +1,59 @@
 package com.ds.algo.multithreading.threadpool;
 
-
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Implementation of a simple thread pool.
+ *
+ * Workers continuously poll the queue. When shutdown() is called,
+ * we set volatile flag + interrupt all workers so blocked take() throws.
+ */
 public class CustomThreadPoolExecutorImpl implements CustomThreadPoolExecutor {
-    private final BlockingQueue<Task> workerQueue;
-    private final Worker[] workerThreads;
-    private boolean interrupt;
+    private final BlockingQueue<Task> taskQueue;
+    private final Worker[] workers;
+    private volatile boolean shutdown;      // volatile for visibility across threads
 
     public CustomThreadPoolExecutorImpl(int numThreads) {
-        workerQueue = new LinkedBlockingQueue<>();
-        workerThreads = new Worker[numThreads];
-        for (int i = 0; i < workerThreads.length; i++) {
-            workerThreads[i] = new Worker("Custom Pool Thread " + (i + 1));
-            workerThreads[i].start();
+        taskQueue = new LinkedBlockingQueue<>();
+        workers = new Worker[numThreads];
+        for (int i = 0; i < numThreads; i++) {
+            workers[i] = new Worker("Pool-Thread-" + (i + 1));
+            workers[i].start();
         }
     }
 
-    public void addTask(Task r) {
+    @Override
+    public void addTask(Task task) {
+        if (shutdown) throw new IllegalStateException("ThreadPool is shut down");
         try {
-            workerQueue.put(r);
+            taskQueue.put(task);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 
+    @Override
     public void shutdown() {
-        this.interrupt = true;
-
-        for (Worker t : workerThreads) {
-            t.interrupt();
+        shutdown = true;
+        for (Worker w : workers) {
+            w.interrupt();      // unblocks take() if waiting
         }
     }
 
-    class Worker extends Thread {
-        public Worker(String name) {
-            super(name);
-        }
+    /** Worker thread – takes tasks from queue and runs them. */
+    private class Worker extends Thread {
+        Worker(String name) { super(name); }
 
         @Override
         public void run() {
-            while (!interrupt) {
+            while (!shutdown) {
                 try {
-                    //Both take and run can be interrupted when any of them is in wait or sleep and this.interrupt is called
-                    //run will execute synchronous in this thread and block this thread until complete or interrupted
-                    workerQueue.take().run();
+                    taskQueue.take().run();  // blocks until task available
                 } catch (InterruptedException e) {
-                    System.out.println("Interrupted");
+                    // shutdown was called → exit loop
                 }
             }
         }
     }
 }
-

@@ -2,10 +2,13 @@ package com.ds.algo.datastructures.queue.array;
 
 import java.util.Objects;
 
+/**
+ * Simple Employee POJO for queue demos.
+ */
 public class Employee {
-    private int id;
-    private String firstName;
-    private String lastName;
+    private final int id;
+    private final String firstName;
+    private final String lastName;
 
     public Employee(int id, String firstName, String lastName) {
         this.id = id;
@@ -13,51 +16,18 @@ public class Employee {
         this.lastName = lastName;
     }
 
+    public int getId()           { return id; }
+    public String getFirstName() { return firstName; }
+    public String getLastName()  { return lastName; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Employee)) return false;
-        Employee employee = (Employee) o;
-        return getId() == employee.getId() &&
-                Objects.equals(getFirstName(), employee.getFirstName()) &&
-                Objects.equals(getLastName(), employee.getLastName());
+        Employee e = (Employee) o;
+        return id == e.id && Objects.equals(firstName, e.firstName) && Objects.equals(lastName, e.lastName);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getFirstName(), getLastName());
-    }
-
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                '}';
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    @Override public int hashCode() { return Objects.hash(id, firstName, lastName); }
+    @Override public String toString() { return "Employee{id=" + id + ", name='" + firstName + " " + lastName + "'}"; }
 }

@@ -1,172 +1,107 @@
 package com.ds.algo.standardproblems;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Arrays;
 
+/**
+ * Classic Interview Problems – Part 3 (Array manipulation).
+ */
 public class Solution2 {
-    public static void main(String args[]) {
-        List<List<String>> list = new ArrayList<>();
-        ArrayList<String> e = new ArrayList<>();
-        e.add("hgj");
-        list.add(e);
-        e.add("jhjgh");
-        list.add(e);
-        System.out.println(list.stream().flatMap(strings -> strings.stream()).collect(Collectors.toList()));
-        List<String> collect = list.stream().flatMap(strings -> strings.stream()).limit(2).collect(Collectors.toList());
-        IntStream.range(0, collect.size())
-                .filter(n -> n % 3 == 0)
-                .mapToObj(collect::get)
-                .collect(Collectors.toList());
 
-        String original = "bcdbcdbcdbcd";
-        String original_two = "bcdbcdbcd";
-        String to_be_divided_with_str = "bcdbcd";
-        System.out.println(findSmallestDivisor(original, to_be_divided_with_str));
-        System.out.println(findSmallestDivisor(original_two, to_be_divided_with_str));
+    // ═══════════════════════════════════════════════════════════════
+    // 1. ROTATE ARRAY LEFT by k positions
+    //    LeetCode #189 (variant)
+    //    Time: O(n)  Space: O(1)   — Three-reverse trick
+    // ═══════════════════════════════════════════════════════════════
 
-
-        //		String str = "((((";
-//		String str = "(()))";
-//		String str = ")))(((";
-        String str = ")))(";
-//		String str = "";
-//		String str = "((()";
-//		String str = "((()))";
-        System.out.println(getMinOperations(str));
-
-
-        int[] arr = {5, 5, 2, 5, 8};
-        System.out.println(countBalancingElements(arr));
+    /**
+     * To rotate left by k:
+     *   1. Reverse [0..k-1]
+     *   2. Reverse [k..n-1]
+     *   3. Reverse entire array
+     *
+     * Example: [1,2,3,4,5,6] rotate left 2 → [3,4,5,6,1,2]
+     */
+    public static void rotateLeft(int[] arr, int k) {
+        k = k % arr.length;
+        reverse(arr, 0, k - 1);
+        reverse(arr, k, arr.length - 1);
+        reverse(arr, 0, arr.length - 1);
     }
 
-    static int countBalancingElements(int[] arr) {
-        // Just calculate sumOfEven and sumOfOdd by iterating over all elements
-        int odd = 0, even = 0;
-        for (int i = 0; i < arr.length; i++) {
-            if (i % 2 == 0)
-                even += arr[i];
-            else
-                odd += arr[i];
+    private static void reverse(int[] arr, int start, int end) {
+        while (start < end) {
+            int temp = arr[start];
+            arr[start++] = arr[end];
+            arr[end--] = temp;
         }
-        int ans = 0;
-        int prevOdd = 0, prevEven = 0;
-        for (int i = 0; i < arr.length; i++) {
-            int nextEven = even - prevEven;
-            int nextOdd = odd - prevOdd;
-            if (i % 2 == 0) // Subtract values based on odd/even index values. This will return the
-                // nextEven/nextOdd values from the remaining array
-                nextEven -= arr[i];
-            else
-                nextOdd -= arr[i];
-            // [0,1,2,3,4]
-            if (prevOdd + nextEven == prevEven + nextOdd) // If remaining values are same from odd&even, increment the
-                // ans.
-                ans++;
-            if (i % 2 == 0) // Keep adding Values to previousOdd & Even array
-                prevEven += arr[i];
-            else
-                prevOdd += arr[i];
-        }
-
-
-//		for (int i = 0; i < arr.length; i++) {
-//			int nextEven = 0, nextOdd = 0;
-//			if (i % 2 == 0) {
-//				nextEven = even - prevEven - arr[i];
-//				nextOdd = odd - prevOdd;
-//			} else {
-//				nextEven = even - prevEven;
-//				nextOdd = odd - prevOdd - arr[i];
-//			}
-//
-//			if (prevEven + nextOdd == prevOdd + nextEven)
-//				ans++;
-//			if (i % 2 == 0)
-//				prevEven += arr[i];
-//			else
-//				prevOdd += arr[i];
-//		}
-        return ans;
     }
 
-    static int countBalancingElements_AnotherSolution(int[] arr) {
-        int ways = 0;
+    // ═══════════════════════════════════════════════════════════════
+    // 2. MINIMUM BRACKET REVERSALS to balance parentheses
+    //    Time: O(n)  Space: O(1)
+    // ═══════════════════════════════════════════════════════════════
 
-        for (int i = 0; i < arr.length; i++) {
-            if (validate(i, arr))
-                ways++;
-        }
-        return ways;
-    }
-
-    static boolean validate(int index, int[] arr) {
-        int odd = 0;
-        int even = 0;
-
-        int counter = 0;
-        for (int i = 0; i < arr.length; i++) {
-            if (i == index) // Ignore current running index
-                continue;
-            if (counter % 2 == 0) {
-                even += arr[i];
-            } else {
-                odd += arr[i];
-            }
-            counter++;
-        }
-        return (odd == even);
-    }
-
-    private static int findSmallestDivisor(String s, String t) {
-        // This means that the length t string cannot be multiplied to get to original string. Hence return false
-        if (s.length() % t.length() > 0)
-            return -1;
-        StringBuilder sb = new StringBuilder();
-        int divisor = s.length() / t.length();
-        for (int i = 0; i < divisor; i++) //Multiple t string with it's number of t times to get to original string
-            sb.append(t);
-        if (!sb.toString().equals(s)) // If both strings not equals even after appending return -1
-            return -1;
-        // Meat of the code
-        for (int i = 1; i <= t.length(); i++) {
-            sb = new StringBuilder();
-            //Extract char by char and duplicate it until the length of t string is reached.
-            //Once reached, check if they are equal. If yes, then return the i iteration value.
-            String subStr = t.substring(0, i);
-            while (sb.length() < t.length()) {
-                sb.append(subStr);
-            }
-            if (sb.toString().equals(t))
-                return i;
-        }
-        return -1;
-    }
-
-
-    // Assumption that only string will only contain ( & ) chars. If other characters are passed, we need to
-    //throw a runtime exception or eliminate using regex. These are not included as a part of below solution.
-
-    private static int getMinOperations(String str) {
+    /**
+     * Track balance: '(' → +1, ')' → -1.
+     * If balance goes to -1, we need one reversal → increment answer, reset balance.
+     * At end, remaining balance = unmatched '(' → need balance/2 more reversals.
+     * Total = answer + remaining balance.
+     */
+    public static int minBracketReversals(String str) {
         int answer = 0, balance = 0;
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == '(') {
-                balance++; // Increment the value to 1, indicates and opening bracket was encountered
-            } else {
-                balance--; // Decrement by 1, indicates and closing bracket was encountered
-            }
-
-            // ((((, means below condition will not execute and balance will have value of 4
-            // from above if check.
+        for (char c : str.toCharArray()) {
+            balance += (c == '(') ? 1 : -1;
             if (balance == -1) {
                 answer++;
-                balance++;
+                balance = 1;   // flip ) to (
             }
         }
+        return answer + balance;  // unmatched opening brackets
+    }
 
-        return answer + balance;
-//		return Math.abs(balance);
+    // ═══════════════════════════════════════════════════════════════
+    // 3. SWAP TWO NUMBERS without temp variable
+    //    Time: O(1)  Space: O(1)
+    // ═══════════════════════════════════════════════════════════════
 
+    /** XOR swap – works for integers, no overflow risk. */
+    public static void swapWithoutTemp(int a, int b) {
+        System.out.println("Before: a=" + a + ", b=" + b);
+        a = a ^ b;
+        b = a ^ b;   // (a^b)^b = a
+        a = a ^ b;   // (a^b)^a = b
+        System.out.println("After : a=" + a + ", b=" + b);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // 4. PRINT ALL SUBARRAYS
+    //    Time: O(n³)  Space: O(1)
+    // ═══════════════════════════════════════════════════════════════
+
+    public static void printAllSubarrays(int[] arr) {
+        for (int start = 0; start < arr.length; start++) {
+            for (int end = start; end < arr.length; end++) {
+                System.out.print("[");
+                for (int k = start; k <= end; k++) {
+                    if (k > start) System.out.print(", ");
+                    System.out.print(arr[k]);
+                }
+                System.out.println("]");
+            }
+        }
+    }
+
+    // ──────────── Demo ────────────
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5, 6};
+        rotateLeft(arr, 2);
+        System.out.println("Rotate left 2  : " + Arrays.toString(arr));  // [3,4,5,6,1,2]
+
+        System.out.println("Min reversals  : " + minBracketReversals(")))("));  // 3
+
+        swapWithoutTemp(25, 8);
+
+        System.out.println("\nAll subarrays of [1,2,3]:");
+        printAllSubarrays(new int[]{1, 2, 3});
     }
 }

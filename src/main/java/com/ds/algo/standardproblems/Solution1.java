@@ -2,175 +2,123 @@ package com.ds.algo.standardproblems;
 
 import java.util.*;
 
-class Solution1 {
+/**
+ * Classic Interview Problems – Part 2.
+ */
+public class Solution1 {
 
-    /*
-    Given an array nums, write a function to move all 0's to the end of it while maintaining the relative order of the non-zero elements.
+    // ═══════════════════════════════════════════════════════════════
+    // 1. MOVE ZEROES to end (maintain relative order)
+    //    LeetCode #283
+    //    Time: O(n)  Space: O(1)
+    // ═══════════════════════════════════════════════════════════════
 
-    Example:
-
-    Input: [0,1,0,3,12]
-    Output: [1,3,12,0,0]
-    Note:
-
-    You must do this in-place without making a copy of the array.
-    Minimize the total number of operations.
+    /**
+     * Two-pointer: 'insertPos' tracks where the next non-zero should go.
+     * Swap non-zero element with position at insertPos.
      */
     public static void moveZeroes(int[] nums) {
-        int z = -1;
-        int c = 1;
+        int insertPos = 0;
         for (int i = 0; i < nums.length; i++) {
-
-            if (nums[i] == 0) {
-                if (z == -1) z = i;
-                else c++;
-            } else {
-                if (z != -1) {
-                    int t = nums[z];
-                    nums[z] = nums[i];
-                    nums[i] = t;
-                    i = i - c;
-                    c = 1;
-                    z = -1;
-                }
+            if (nums[i] != 0) {
+                int temp = nums[insertPos];
+                nums[insertPos] = nums[i];
+                nums[i] = temp;
+                insertPos++;
             }
         }
     }
 
-    /*
-    Given an array of strings, group anagrams together.
+    // ═══════════════════════════════════════════════════════════════
+    // 2. GROUP ANAGRAMS
+    //    LeetCode #49
+    //    Time: O(n * k log k)  Space: O(n * k)  (k = max word length)
+    // ═══════════════════════════════════════════════════════════════
 
-    Example:
-
-    Input: ["eat", "tea", "tan", "ate", "nat", "bat"],
-    Output:
-    [
-      ["ate","eat","tea"],
-      ["nat","tan"],
-      ["bat"]
-    ]
-    Note:
-
-    All inputs will be in lowercase.
-    The order of your output does not matter.
+    /**
+     * Sort each word → use sorted form as map key → group originals.
      */
     public static List<List<String>> groupAnagrams(String[] strs) {
-        Map<String, List<String>> store = new HashMap<>();
-        for (String s :
-                strs) {
-
-            char[] charArray = s.toCharArray();
-            Arrays.sort(charArray);
-            String sorted = new String(charArray);
-
-            if (store.containsKey(sorted)) {
-                store.get(sorted).add(s);
-            } else {
-                List<String> value = new ArrayList<String>();
-                value.add(s);
-                store.put(sorted, value);
-            }
+        Map<String, List<String>> map = new HashMap<>();
+        for (String s : strs) {
+            char[] chars = s.toCharArray();
+            Arrays.sort(chars);
+            String key = new String(chars);
+            map.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
         }
-        return new ArrayList<>(store.values());
+        return new ArrayList<>(map.values());
     }
 
-    /*
-    Given an integer array arr, count element x such that x + 1 is also in arr.
+    // ═══════════════════════════════════════════════════════════════
+    // 3. SINGLE NUMBER (every element appears twice except one)
+    //    LeetCode #136
+    //    Time: O(n)  Space: O(1)
+    // ═══════════════════════════════════════════════════════════════
 
-If there're duplicates in arr, count them seperately.
-
-
-
-Example 1:
-
-Input: arr = [1,2,3]
-Output: 2
-Explanation: 1 and 2 are counted cause 2 and 3 are in arr.
-Example 2:
-
-Input: arr = [1,1,3,3,5,5,7,7]
-Output: 0
-Explanation: No numbers are counted, cause there's no 2, 4, 6, or 8 in arr.
-Example 3:
-
-Input: arr = [1,3,2,3,5,0]
-Output: 3
-Explanation: 0, 1 and 2 are counted cause 1, 2 and 3 are in arr.
-Example 4:
-
-Input: arr = [1,1,2,2]
-Output: 2
-Explanation: Two 1s are counted cause 2 is in arr.
-
-
-Constraints:
-
-1 <= arr.length <= 1000
-0 <= arr[i] <= 1000
+    /**
+     * XOR trick: a ^ a = 0, a ^ 0 = a.
+     * XOR all elements → duplicates cancel out → single number remains.
      */
-    public static int countElements(int[] arr) {
-        int count = 0;
-        int temp[] = new int[1100];
-        for (int i :
-                arr) {
+    public static int singleNumber(int[] nums) {
+        int result = 0;
+        for (int num : nums) result ^= num;
+        return result;
+    }
 
-            temp[i] = 1;
+    // ═══════════════════════════════════════════════════════════════
+    // 4. CONTIGUOUS ARRAY (equal 0s and 1s)
+    //    LeetCode #525
+    //    Time: O(n)  Space: O(n)
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * Replace 0→-1, then find longest subarray with sum=0 using prefix sum + map.
+     */
+    public static int findMaxLength(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        int maxLen = 0, sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum += (nums[i] == 0) ? -1 : 1;
+            if (map.containsKey(sum))
+                maxLen = Math.max(maxLen, i - map.get(sum));
+            else
+                map.put(sum, i);
         }
-        for (int i :
-                arr) {
-            if (temp[i + 1] == 1) {
-                count++;
-            }
+        return maxLen;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // 5. COUNT ELEMENTS where x+1 also exists
+    //    Time: O(n)  Space: O(n)
+    // ═══════════════════════════════════════════════════════════════
+
+    public static int countElements(int[] arr) {
+        Set<Integer> set = new HashSet<>();
+        for (int num : arr) set.add(num);
+        int count = 0;
+        for (int num : arr) {
+            if (set.contains(num + 1)) count++;
         }
         return count;
     }
 
-    /*
-    Given a non-empty array of integers, every element appears twice except for one. Find that single one.
+    // ──────────── Demo ────────────
+    public static void main(String[] args) {
+        int[] zeros = {0, 1, 0, 3, 12};
+        moveZeroes(zeros);
+        System.out.println("Move zeroes    : " + Arrays.toString(zeros));   // [1,3,12,0,0]
 
-    Note:
+        System.out.println("Group anagrams : " +
+                groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}));
 
-    Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
+        System.out.println("Single number  : " +
+                singleNumber(new int[]{4, 1, 2, 1, 2}));                    // 4
 
-    Example 1:
+        System.out.println("Max equal 0/1  : " +
+                findMaxLength(new int[]{0, 1, 0, 1, 0, 1, 1}));            // 6
 
-    Input: [2,2,1]
-    Output: 1
-    Example 2:
-
-    Input: [4,1,2,1,2]
-    Output: 4
-     */
-    public int singleNumber(int[] nums) {
-        HashSet<Integer> set = new HashSet<>();
-        for (int i : nums
-        ) {
-            boolean add = set.add(i);
-            if (!add) {
-                set.remove(i);
-            }
-
-        }
-        return set.stream().findFirst()
-                .get();
-    }
-
-    public int findMaxLength(int[] nums) {
-        for (int i = 0; i < nums.length; i++) {
-            nums[i] = (nums[i] == 0) ? -1 : 1;
-        }
-        HashMap<Integer, Integer> map = new HashMap<>();
-        map.put(0, -1);
-        int maxLength = 0;
-        int sum = 0;
-
-        for (int i = 0; i < nums.length; i++) {
-            sum += nums[i];
-            if (map.containsKey(sum)) {
-                maxLength = Math.max(maxLength, i - map.get(sum));
-            }
-            map.putIfAbsent(sum, i);
-        }
-        return maxLength;
+        System.out.println("Count elements : " +
+                countElements(new int[]{1, 2, 3}));                          // 2
     }
 }

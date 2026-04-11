@@ -2,59 +2,80 @@ package com.ds.algo.datastructures.queue.array;
 
 import java.util.NoSuchElementException;
 
+/**
+ * Circular Array Queue (interview-classic).
+ *
+ * KEY IDEA: Use front/back pointers that wrap around using modulo.
+ *           This avoids wasting space at the front after dequeue.
+ *
+ * Time : enqueue/dequeue/peek O(1)    Space: O(capacity)
+ *
+ * FIFO – First In, First Out.
+ */
 public class ArrayQueue {
-    private Employee[] queue;
+    private Object[] queue;
     private int front;
     private int back;
+    private int size;
 
     public ArrayQueue(int capacity) {
-        queue = new Employee[capacity];
+        queue = new Object[capacity];
     }
 
-    public void add(Employee employee) {
-        if (isFull()) {
-            Employee[] newQueue = new Employee[2 * queue.length];
-            System.arraycopy(queue, 0, newQueue, 0, queue.length);
+    /** Add to the back of the queue. */
+    public void enqueue(Object item) {
+        if (size == queue.length) {
+            // Double capacity and unwrap circular buffer
+            Object[] newQueue = new Object[queue.length * 2];
+            for (int i = 0; i < size; i++) {
+                newQueue[i] = queue[(front + i) % queue.length];
+            }
             queue = newQueue;
-        }
-        queue[back++] = employee;
-    }
-
-    public Employee remove() {
-        if (isEmpty()) {
-            throw new NoSuchElementException();
-        }
-        Employee removedEmployee = queue[front];
-        queue[front++] = null;
-        if (isEmpty()) {
             front = 0;
-            back = 0;
+            back = size;
         }
-        return removedEmployee;
+        queue[back] = item;
+        back = (back + 1) % queue.length;      // wrap around
+        size++;
     }
 
-    public Employee peek() {
-        if (isEmpty()) {
-            throw new NoSuchElementException();
-        }
+    /** Remove from the front of the queue. */
+    public Object dequeue() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
+        Object item = queue[front];
+        queue[front] = null;                    // help GC
+        front = (front + 1) % queue.length;     // wrap around
+        size--;
+        return item;
+    }
+
+    public Object peek() {
+        if (isEmpty()) throw new NoSuchElementException("Queue is empty");
         return queue[front];
     }
 
-    public int size() {
-        return back - front;
-    }
-
-    private boolean isEmpty() {
-        return size() == 0;
-    }
-
-    private boolean isFull() {
-        return back == queue.length;
-    }
+    public int size()        { return size; }
+    public boolean isEmpty() { return size == 0; }
 
     public void printQueue() {
-        for (int i = front; i < back; i++) {
-            System.out.println(queue[i]);
+        for (int i = 0; i < size; i++) {
+            System.out.println("  " + queue[(front + i) % queue.length]);
         }
+    }
+
+    // ──────────── demo ────────────
+    public static void main(String[] args) {
+        ArrayQueue q = new ArrayQueue(3);
+        q.enqueue("A");
+        q.enqueue("B");
+        q.enqueue("C");
+        System.out.println("Dequeue: " + q.dequeue());  // A
+        q.enqueue("D");
+        q.enqueue("E");  // triggers resize
+
+        System.out.println("Peek   : " + q.peek());     // B
+        System.out.println("Size   : " + q.size());     // 4
+        System.out.println("\n── Queue (front → back) ──");
+        q.printQueue();
     }
 }

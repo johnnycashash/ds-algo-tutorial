@@ -1,12 +1,19 @@
 package com.ds.algo.designpattern.creational.builder;
 
-import lombok.Value;
-
-@Value
+/**
+ * Builder Pattern – construct complex objects step-by-step.
+ *
+ * KEY IDEA: When a class has many optional parameters, use a static inner Builder
+ *           to avoid telescoping constructors.
+ *
+ * Benefits:
+ *   - Immutable objects (no setters on Computer).
+ *   - Readable fluent API: new Computer.Builder(16, 512).setGraphics(true).build()
+ */
 public class Computer {
-    int ram;
-    int hdd;
-    boolean graphics;
+    private final int ram;          // required
+    private final int hdd;          // required
+    private final boolean graphics; // optional
 
     private Computer(Builder builder) {
         this.ram = builder.ram;
@@ -14,19 +21,29 @@ public class Computer {
         this.graphics = builder.graphics;
     }
 
+    public int getRam()          { return ram; }
+    public int getHdd()          { return hdd; }
+    public boolean hasGraphics() { return graphics; }
+
+    @Override
+    public String toString() {
+        return "Computer{ram=" + ram + "GB, hdd=" + hdd + "GB, graphics=" + graphics + "}";
+    }
+
+    // ── Static inner Builder ──
     public static class Builder {
         private final int ram;
         private final int hdd;
-        boolean graphics;
+        private boolean graphics;
 
         public Builder(int ram, int hdd) {
             this.ram = ram;
             this.hdd = hdd;
         }
 
-        Builder setGraphics(boolean graphics) {
+        public Builder setGraphics(boolean graphics) {
             this.graphics = graphics;
-            return this;
+            return this;                // fluent API
         }
 
         public Computer build() {

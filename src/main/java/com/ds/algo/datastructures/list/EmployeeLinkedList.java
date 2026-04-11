@@ -1,9 +1,20 @@
 package com.ds.algo.datastructures.list;
 
+/**
+ * Singly Linked List (with Employee data).
+ *
+ * KEY OPERATIONS:
+ *   addToFront    – O(1)  (new head)
+ *   removeFromFront – O(1) (pop head)
+ *   printList     – O(n)
+ *
+ * Interview tip: Always handle the empty-list edge case!
+ */
 public class EmployeeLinkedList {
     private EmployeeNode head;
     private int size;
 
+    /** Insert at the head – O(1). */
     public void addToFront(Employee employee) {
         EmployeeNode node = new EmployeeNode(employee);
         node.setNext(head);
@@ -11,35 +22,24 @@ public class EmployeeLinkedList {
         size++;
     }
 
+    /** Remove from head – O(1). */
     public Employee removeFromFront() {
-        if (isEmpty()) {
-            return null;
-        }
-        EmployeeNode removeNode = head;
+        if (isEmpty()) return null;
+        EmployeeNode removed = head;
         head = head.getNext();
+        removed.setNext(null);       // help GC
         size--;
-        removeNode.setNext(null);
-        return removeNode.getEmployee();
+        return removed.getEmployee();
     }
 
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
+    public int getSize()    { return size; }
+    public boolean isEmpty() { return head == null; }
 
     public void printList() {
         EmployeeNode current = head;
         while (current != null) {
-            System.out.println(current.getEmployee());
+            System.out.println("  " + current);
             current = current.getNext();
         }
-    }
-
-    public boolean isEmpty() {
-        return head == null;
-        //or size is 0
     }
 }

@@ -1,10 +1,17 @@
 package com.ds.algo.datastructures.queue.array;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
+/**
+ * Simple data wrapper for circular queue demo.
+ */
 public class EmployeeCQ {
-    Integer data;
+    final Integer data;
+
+    public EmployeeCQ(Integer data) {
+        this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(data);
+    }
 }

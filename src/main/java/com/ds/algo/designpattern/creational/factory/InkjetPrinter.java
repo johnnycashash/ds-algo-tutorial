@@ -1,9 +1,7 @@
 package com.ds.algo.designpattern.creational.factory;
 
-import lombok.Data;
-
-@Data
 public class InkjetPrinter implements Printer {
+    @Override
     public void print() {
         System.out.println("Inkjet Printing...");
     }

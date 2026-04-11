@@ -1,34 +1,22 @@
 package com.ds.algo.datastructures.list;
 
+/**
+ * Node wrapper for the Employee singly-linked list.
+ */
 public class EmployeeNode {
-    Employee employee;
-    EmployeeNode next;
+    private Employee employee;
+    private EmployeeNode next;
 
     public EmployeeNode(Employee employee) {
         this.employee = employee;
     }
 
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
-    }
-
-    public EmployeeNode getNext() {
-        return next;
-    }
-
-    public void setNext(EmployeeNode next) {
-        this.next = next;
-    }
+    public Employee getEmployee()       { return employee; }
+    public EmployeeNode getNext()       { return next; }
+    public void setNext(EmployeeNode n) { this.next = n; }
 
     @Override
     public String toString() {
-        return "EmployeeNode{" +
-                "employee=" + employee +
-                ", next=" + next +
-                '}';
+        return employee.toString();
     }
 }

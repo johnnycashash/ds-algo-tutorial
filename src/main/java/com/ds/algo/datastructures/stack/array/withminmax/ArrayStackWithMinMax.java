@@ -1,57 +1,56 @@
 package com.ds.algo.datastructures.stack.array.withminmax;
 
+/**
+ * Stack that supports getMin() and getMax() in O(1).
+ *
+ * KEY IDEA: Each slot stores {data, currentMin, currentMax}.
+ *           When pushing, compare with the previous top's min/max.
+ *           When popping, the min/max is automatically restored.
+ *
+ * Time : push/pop/getMin/getMax all O(1)
+ * Space: O(n) – 3 ints per element
+ */
 public class ArrayStackWithMinMax {
-    MinMaxData[] stack;
-    int top;
+    private int[] data;
+    private int[] mins;
+    private int[] maxs;
+    private int top = -1;
 
     public ArrayStackWithMinMax(int capacity) {
-        stack = new MinMaxData[capacity];
+        data = new int[capacity];
+        mins = new int[capacity];
+        maxs = new int[capacity];
     }
 
-    public void push(int data) {
-        if (top == stack.length) {
-            System.out.println("resize or exception");
-            return;
-        }
-        MinMaxData toBeInserted = null;
-        if (top == 0) {
-            toBeInserted = new MinMaxData(data, data, data);
-        } else {
-            MinMaxData prevMinMaxData = stack[top - 1];
-            toBeInserted = new MinMaxData(data, prevMinMaxData.getMin(), prevMinMaxData.getMax());
-            if (data < prevMinMaxData.getMin()) {
-                toBeInserted.setMin(data);
-            }
-            if (data > prevMinMaxData.getMax()) {
-                toBeInserted.setMax(data);
-            }
-        }
-        stack[top++] = toBeInserted;
+    public void push(int val) {
+        if (top + 1 == data.length) throw new RuntimeException("Stack full");
+        top++;
+        data[top] = val;
+        mins[top] = (top == 0) ? val : Math.min(val, mins[top - 1]);
+        maxs[top] = (top == 0) ? val : Math.max(val, maxs[top - 1]);
     }
 
     public int pop() {
-        if (top == 0) {
-            System.out.println("exception");
-            return -1;
-        }
-        MinMaxData minMaxData = stack[--top];
-        stack[top] = null;
-        return minMaxData.getData();
+        if (top < 0) throw new RuntimeException("Stack empty");
+        return data[top--];
     }
 
-    public int peek() {
-        //if top!=0
-        return stack[top - 1].getData();
-    }
+    public int peek()   { return data[top]; }
+    public int getMin() { return mins[top]; }
+    public int getMax() { return maxs[top]; }
+    public boolean isEmpty() { return top < 0; }
 
-    public int getMin() {
-        //if top!=0
-        return stack[top - 1].getMin();
-    }
+    // ──────────── demo ────────────
+    public static void main(String[] args) {
+        ArrayStackWithMinMax s = new ArrayStackWithMinMax(10);
+        s.push(4);
+        s.push(6);
+        s.push(2);
+        System.out.println("Min: " + s.getMin());  // 2
+        System.out.println("Max: " + s.getMax());  // 6
 
-    public int getMax() {
-        //if top!=0
-        return stack[top - 1].getMax();
+        s.pop();  // remove 2
+        System.out.println("Min after pop: " + s.getMin());  // 4
+        System.out.println("Max after pop: " + s.getMax());  // 6
     }
 }
-

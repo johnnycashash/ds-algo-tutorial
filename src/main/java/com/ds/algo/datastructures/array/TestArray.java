@@ -1,20 +1,30 @@
 package com.ds.algo.datastructures.array;
 
+import java.util.Arrays;
+
+/**
+ * Array Basics – quick refresher for interviews.
+ *
+ * KEY POINTS:
+ *   - Fixed size, contiguous memory, O(1) random access.
+ *   - Insert/delete at arbitrary index → O(n) due to shifting.
+ *   - Java arrays are zero-indexed; .length gives the capacity.
+ */
 public class TestArray {
     public static void main(String[] args) {
-        int[] intArray = new int[7];
+        // Declaration & initialisation
+        int[] arr = {20, -1, 20, 45, 2, 7, 222};
 
-        intArray[0] = 20;
-        intArray[1] = -1;
-        intArray[2] = 20;
-        intArray[3] = 45;
-        intArray[4] = 2;
-        intArray[5] = 7;
-        intArray[6] = 222;
-        System.out.println(intArray.length);
-        for (int i = 0; i < intArray.length; i++) {
-            System.out.println(intArray[i]);
-        }
+        System.out.println("Length  : " + arr.length);                // 7
+        System.out.println("Element : " + arr[3]);                    // 45
+        System.out.println("Array   : " + Arrays.toString(arr));
+
+        // Sort
+        Arrays.sort(arr);
+        System.out.println("Sorted  : " + Arrays.toString(arr));
+
+        // Binary search (on sorted array)
+        int idx = Arrays.binarySearch(arr, 45);
+        System.out.println("Index of 45 in sorted array: " + idx);
     }
-
 }

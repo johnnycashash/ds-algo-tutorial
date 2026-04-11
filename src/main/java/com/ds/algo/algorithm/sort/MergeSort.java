@@ -1,58 +1,49 @@
 package com.ds.algo.algorithm.sort;
 
+import java.util.Arrays;
+
+/**
+ * Merge Sort – classic divide-and-conquer sort.
+ *
+ * KEY IDEA:
+ *   1. Split array in half recursively until single elements.
+ *   2. Merge two sorted halves back together.
+ *
+ * Time : O(n log n) always     Space: O(n) – needs temp arrays
+ * Stable: YES
+ */
 public class MergeSort {
 
-    public static void merge(int[] left_arr, int[] right_arr, int[] arr, int left_size, int right_size) {
+    public static void mergeSort(int[] arr, int left, int right) {
+        if (left >= right) return;                          // base case: 0 or 1 element
 
-        int i = 0, l = 0, r = 0;
-        //The while loops check the conditions for merging
-        while (l < left_size && r < right_size) {
-
-            if (left_arr[l] < right_arr[r]) {
-                arr[i++] = left_arr[l++];
-            } else {
-                arr[i++] = right_arr[r++];
-            }
-        }
-        while (l < left_size) {
-            arr[i++] = left_arr[l++];
-        }
-        while (r < right_size) {
-            arr[i++] = right_arr[r++];
-        }
+        int mid = left + (right - left) / 2;
+        mergeSort(arr, left, mid);                          // sort left half
+        mergeSort(arr, mid + 1, right);                     // sort right half
+        merge(arr, left, mid, right);                       // merge both halves
     }
 
-    public static void mergeSort(int[] arr, int len) {
-        if (len < 2) {
-            return;
-        }
+    /**
+     * Merge arr[left..mid] and arr[mid+1..right] into arr[left..right].
+     */
+    private static void merge(int[] arr, int left, int mid, int right) {
+        int[] temp = new int[right - left + 1];
+        int i = left, j = mid + 1, k = 0;
 
-        int mid = len / 2;
-        int[] left_arr = new int[mid];
-        int[] right_arr = new int[len - mid];
-
-        //Dividing array into two and copying into two separate arrays
-        int k = 0;
-        for (int i = 0; i < len; ++i) {
-            if (i < mid) {
-                left_arr[i] = arr[i];
-            } else {
-                right_arr[k] = arr[i];
-                k = k + 1;
-            }
+        while (i <= mid && j <= right) {
+            if (arr[i] <= arr[j]) temp[k++] = arr[i++];    // <= keeps sort STABLE
+            else                  temp[k++] = arr[j++];
         }
-        // Recursively calling the function to divide the subarrays further
-        mergeSort(left_arr, mid);
-        mergeSort(right_arr, len - mid);
-        // Calling the merge method on each subdivision
-        merge(left_arr, right_arr, arr, mid, len - mid);
+        while (i <= mid)  temp[k++] = arr[i++];            // remaining left
+        while (j <= right) temp[k++] = arr[j++];           // remaining right
+
+        System.arraycopy(temp, 0, arr, left, temp.length);  // copy back
     }
 
-    public static void main(String args[]) {
-        int[] array = {12, 1, 10, 50, 5, 15, 45};
-        mergeSort(array, array.length);
-        for (int i = 0; i < array.length; ++i) {
-            System.out.print(array[i] + " ");
-        }
+    // ──────────── demo ────────────
+    public static void main(String[] args) {
+        int[] arr = {12, 1, 10, 50, 5, 15, 45};
+        mergeSort(arr, 0, arr.length - 1);
+        System.out.println(Arrays.toString(arr));           // [1, 5, 10, 12, 15, 45, 50]
     }
 }

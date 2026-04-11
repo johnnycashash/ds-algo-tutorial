@@ -1,22 +1,33 @@
 package com.ds.algo.algorithm.other;
 
+/**
+ * LCM (Least Common Multiple).
+ *
+ * KEY FORMULA:  lcm(a, b) = (a * b) / gcd(a, b)
+ *
+ * Time: O(log(min(a,b)))  (dominated by GCD)
+ */
 public class Lcm {
-    public static int findLCM(int a, int b) {
-        int large = a > b ? a : b;
-        int small = a > b ? b : a;
-        int i = large;
-        while (true) {
-            if (i % small == 0) {
-                return i;
-            }
-            i += large;
+
+    /** Preferred approach – uses the GCD relationship. */
+    public static int lcm(int a, int b) {
+        return (a / HcfAkaGcdEuclid.gcdIterative(a, b)) * b;   // divide first to avoid overflow
+    }
+
+    /** Brute-force approach – keep adding the larger until divisible by smaller. */
+    public static int lcmBruteForce(int a, int b) {
+        int large = Math.max(a, b);
+        int small = Math.min(a, b);
+        int multiple = large;
+        while (multiple % small != 0) {
+            multiple += large;
         }
+        return multiple;
     }
 
     public static void main(String[] args) {
-        int a = 7, b = 3;
-        int gcd = HcfAkaGcdEuclid.gcdNonRecursion(a, b);
-        System.out.println("Lcm " + (a * b) / gcd);
-        System.out.println("Lcm " + findLCM(a, b));
+        System.out.println("LCM(7,3) via GCD    = " + lcm(7, 3));           // 21
+        System.out.println("LCM(7,3) brute      = " + lcmBruteForce(7, 3)); // 21
+        System.out.println("LCM(12,18) via GCD  = " + lcm(12, 18));         // 36
     }
 }

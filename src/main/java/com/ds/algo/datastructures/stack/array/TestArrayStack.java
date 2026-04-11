@@ -1,23 +1,21 @@
 package com.ds.algo.datastructures.stack.array;
 
+/** Demo: Array-backed Stack. */
 public class TestArrayStack {
     public static void main(String[] args) {
-        Employee a = new Employee(1, "FAAA", "LAAA");
-        Employee b = new Employee(2, "FBBB", "LBBB");
-        Employee c = new Employee(3, "FCCC", "LCCC");
-        Employee d = new Employee(4, "FDDD", "LDDD");
+        ArrayStack stack = new ArrayStack(3);
+        stack.push("Alice");
+        stack.push("Bob");
+        stack.push("Charlie");
+        stack.push("Diana");        // triggers grow (3 → 6)
 
-        ArrayStack arrayStack = new ArrayStack(3);
-        arrayStack.push(a);
-        arrayStack.push(b);
-        arrayStack.push(c);
-        System.out.println(arrayStack.getStack().length);
-        arrayStack.push(d);
-        System.out.println(arrayStack.getStack().length);
-        //arrayStack.printStack();
-        //System.out.println(arrayStack.peek());
-        //arrayStack.printStack();
-        System.out.println(arrayStack.pop());
-        System.out.println(arrayStack.peek());
+        System.out.println("Size : " + stack.size());   // 4
+        System.out.println("Peek : " + stack.peek());   // Diana
+        System.out.println("Pop  : " + stack.pop());    // Diana
+        System.out.println("Pop  : " + stack.pop());    // Charlie
+        System.out.println("Peek : " + stack.peek());   // Bob
+
+        System.out.println("\n── Remaining stack (top → bottom) ──");
+        stack.printStack();
     }
 }

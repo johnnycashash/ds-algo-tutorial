@@ -1,125 +1,118 @@
 package com.ds.algo.practice;
 
-
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Stack;
-
-@Getter
+/**
+ * Linked List – common interview problems.
+ *
+ * PROBLEMS COVERED:
+ *   1. Reverse a linked list          – O(n) time, O(1) space
+ *   2. Find middle node (slow/fast)   – O(n) time, O(1) space
+ *   3. Detect cycle (Floyd's algo)    – O(n) time, O(1) space
+ */
 public class LinkedList {
+    private Node head;
 
-    Node head;
-
-    public void addToFront(String data){
-        Node newNode=new Node(data);
-        newNode.next=head;
-        head=newNode;
-    }
-
-    public void removeFromFront(){
-        head=head.next;
-    }
-
-    @Setter
-    @Getter
     public static class Node {
         String data;
         Node next;
-
-        Node(String data){
-            this.data=data;
-        }
-
+        Node(String data) { this.data = data; }
     }
 
-    public static void main(String[] args) {
-        LinkedList linkedList=new LinkedList();
-        linkedList.addToFront("7");
-        linkedList.addToFront("6");
-        linkedList.addToFront("5");
-        linkedList.addToFront("4");
-        linkedList.addToFront("3");
-        linkedList.addToFront("2");
-        linkedList.addToFront("1");
-        linkedList.addToFront("0");
-        linkedList.removeFromFront();
+    // ────────── Basic Operations ──────────
 
-        printList(linkedList.getHead());
-
-        Stack<Node> stack=new Stack<>();
-        pushStack(linkedList, stack);
-        Node head = reverseFromStack(stack);
-        //printList(head);
-        head = reverseLinkedList(head);
-        printList(head);
-        Node node = middleLinkedList(head);
-        System.out.println("middle="+node.getData());
-        System.out.println("loop="+loopLinkedList(head));
+    /** Insert at head – O(1). */
+    public void addToFront(String data) {
+        Node newNode = new Node(data);
+        newNode.next = head;
+        head = newNode;
     }
 
-    private static Node reverseFromStack(Stack<Node> stack) {
-        Node head=null;
-        Node currHead=null;
-        while (!stack.isEmpty()){
-            Node popped = stack.pop();
-            if(head==null){
-                head=popped;
-                currHead=popped;
-            } else{
-                currHead.next=popped;
-                currHead=popped;
-            }
-        }
-        if(currHead!=null){
-            currHead.next=null;
-        }
-        return head;
+    /** Remove from head – O(1). */
+    public void removeFromFront() {
+        if (head != null) head = head.next;
     }
 
-    private static void pushStack(LinkedList linkedList, Stack<Node> stack) {
-        Node tempHead2= linkedList.getHead();
-        while (tempHead2!=null){
-            stack.push(tempHead2);
-            tempHead2=tempHead2.next;
+    // ────────── Interview Problem 1: Reverse ──────────
+
+    /**
+     * Reverse a singly linked list in-place.
+     * Use THREE pointers: prev, current, nextNode.
+     *
+     *   null ← 1 ← 2 ← 3    (prev moves right, current moves right)
+     */
+    public static Node reverse(Node head) {
+        Node prev = null, current = head;
+        while (current != null) {
+            Node nextNode = current.next;   // save next
+            current.next = prev;            // reverse pointer
+            prev = current;                 // advance prev
+            current = nextNode;             // advance current
         }
+        return prev;    // new head
     }
 
-    private static void printList(Node head) {
-        Node tempHead1= head;
-        while (tempHead1!=null){
-            System.out.println(tempHead1.getData());
-            tempHead1=tempHead1.next;
-        }
-    }
+    // ────────── Interview Problem 2: Find Middle ──────────
 
-    private static Node reverseLinkedList(Node head){
-        Node prev=null;
-        Node current=head;
-        while (current!=null){
-            Node nextNode=current.getNext();
-            current.next=prev;
-            prev=current;
-            current=nextNode;
-        }
-        return prev;
-    }
-    private static Node middleLinkedList(Node head){
-        Node slow=head;
-        Node fast=head;
-        while (fast!=null&&fast.next!=null){
-            slow=slow.next;
-            fast=fast.next.next;
+    /**
+     * Find middle using slow & fast pointers.
+     * Slow moves 1 step, fast moves 2 steps.
+     * When fast reaches end, slow is at middle.
+     */
+    public static Node findMiddle(Node head) {
+        Node slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
         }
         return slow;
     }
-    private static boolean loopLinkedList(Node head){
-        Node slow=head;
-        Node fast=head;
-        while (fast!=null&&fast.next!=null){
-            slow=slow.next;
-            fast=fast.next.next;
+
+    // ────────── Interview Problem 3: Detect Cycle ──────────
+
+    /**
+     * Floyd's Cycle Detection (Tortoise and Hare).
+     * If slow == fast at any point → cycle exists.
+     */
+    public static boolean hasCycle(Node head) {
+        Node slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) return true;  // cycle detected!
         }
-        return slow==fast;
+        return false;   // no cycle
+    }
+
+    // ────────── Utility ──────────
+
+    public static void printList(Node head) {
+        Node temp = head;
+        while (temp != null) {
+            System.out.print(temp.data + " → ");
+            temp = temp.next;
+        }
+        System.out.println("null");
+    }
+
+    // ────────── Demo ──────────
+
+    public static void main(String[] args) {
+        LinkedList list = new LinkedList();
+        for (int i = 5; i >= 1; i--) list.addToFront(String.valueOf(i));
+
+        System.out.print("Original : ");
+        printList(list.head);                           // 1→2→3→4→5→null
+
+        System.out.println("Middle   : " + findMiddle(list.head).data);  // 3
+
+        list.head = reverse(list.head);
+        System.out.print("Reversed : ");
+        printList(list.head);                           // 5→4→3→2→1→null
+
+        System.out.println("Has cycle: " + hasCycle(list.head));         // false
+
+        // Create a cycle for testing: 1→2→3→1...
+        Node a = new Node("1"), b = new Node("2"), c = new Node("3");
+        a.next = b; b.next = c; c.next = a;
+        System.out.println("Cycle test: " + hasCycle(a));                // true
     }
 }

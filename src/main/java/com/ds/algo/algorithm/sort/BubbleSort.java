@@ -1,23 +1,37 @@
 package com.ds.algo.algorithm.sort;
 
+import java.util.Arrays;
+
+/**
+ * Bubble Sort – repeatedly swap adjacent elements if they're in the wrong order.
+ *
+ * KEY IDEA: After each outer pass, the largest unsorted element "bubbles" to its correct position.
+ *
+ * Time : O(n²) worst / average,  O(n) best (with earlyExit flag)
+ * Space: O(1) – in-place
+ * Stable: YES
+ */
 public class BubbleSort {
-    public static void bubbleSort(int array[]) {
-        for (int i = array.length - 1; i > 0; i--) {
-            for (int j = 0; j < i; j++) {
-                if (array[j] > array[j + 1]) {
-                    int temp = array[j];
-                    array[j] = array[j + 1];
-                    array[j + 1] = temp;
+
+    public static void bubbleSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 0; i < n - 1; i++) {
+            boolean swapped = false;                // optimisation: early exit
+            for (int j = 0; j < n - 1 - i; j++) {  // last i elements are already sorted
+                if (arr[j] > arr[j + 1]) {
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                    swapped = true;
                 }
             }
+            if (!swapped) break;                    // array is already sorted
         }
     }
 
     public static void main(String[] args) {
-        int[] array = new int[]{1, 5, 84, 846, 44, 2, 55};
-        bubbleSort(array);
-        for (int i = 0; i < array.length; i++) {
-            System.out.println(array[i]);
-        }
+        int[] arr = {1, 5, 84, 846, 44, 2, 55};
+        bubbleSort(arr);
+        System.out.println(Arrays.toString(arr));   // [1, 2, 5, 44, 55, 84, 846]
     }
 }

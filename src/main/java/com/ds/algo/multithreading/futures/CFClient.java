@@ -1,70 +1,58 @@
 package com.ds.algo.multithreading.futures;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.function.*;
 
+/**
+ * CompletableFuture Cheat-Sheet – common interview patterns.
+ *
+ * KEY METHODS:
+ *   supplyAsync   → run async task that RETURNS a value
+ *   thenApply     → transform result (like map)
+ *   thenCompose   → chain another CF (like flatMap)
+ *   thenCombine   → combine results of two CFs
+ *   thenAccept    → consume result (no return)
+ *   exceptionally → handle exceptions
+ *   handle        → handle both success and failure
+ *   join/get      → block and get result
+ */
 public class CFClient {
     public static void main(String[] args) {
 
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
-        CompletableFuture<Integer> handle = CompletableFuture.supplyAsync(() -> {
-            //System.out.println(Thread.currentThread().getName());
-            int t = 3 / 0;
+        // ─── 1. Basic: supplyAsync → thenApply → thenAccept ───
+        CompletableFuture.supplyAsync(() -> "Hello")
+                .thenApply(s -> s + " World")
+                .thenAccept(s -> System.out.println("1. " + s));     // Hello World
 
-            return 2;
-        }).thenApply(integer -> {
-            // System.out.println(Thread.currentThread().getName());
-            return integer + 2;
-        }).exceptionally(throwable -> {
-            System.out.println("exceptionally" + throwable);
-            return 9;
-        }).handle((integer, throwable) -> {
-            System.out.println(integer);
-            System.out.println(throwable);
-            return 1;
-        }).thenApply(integer -> integer + 3);
-        handle.thenAccept(integer -> System.out.println(integer));
-        handle.complete(1);
-        CompletableFuture<Integer> handle1 = CompletableFuture.supplyAsync(() -> {
-            //System.out.println(Thread.currentThread().getName());
+        // ─── 2. Exception handling ───
+        CompletableFuture.supplyAsync(() -> {
+                    if (true) throw new RuntimeException("Oops!");
+                    return "OK";
+                })
+                .exceptionally(ex -> "Recovered: " + ex.getMessage())
+                .thenAccept(s -> System.out.println("2. " + s));     // Recovered: ...
 
-            return 2;
-        }).thenCompose(integer -> {
-            //System.out.println(Thread.currentThread().getName());
-            return CompletableFuture.supplyAsync(() -> {
-                //System.out.println(Thread.currentThread().getName());
+        // ─── 3. handle() – handles both success and failure ───
+        String result = CompletableFuture.supplyAsync(() -> "Data")
+                .handle((val, ex) -> {
+                    if (ex != null) return "Error";
+                    return val.toUpperCase();
+                }).join();
+        System.out.println("3. " + result);                          // DATA
 
-                return integer + 8;
-            });
-        }).exceptionally(throwable -> {
-            // System.out.println(throwable);
-            return 9;
-        });
-        handle.thenCombine(handle1, (integer, integer2) -> integer + integer2).thenAccept(integer -> System.out.println(integer));
-        // System.out.println(Thread.currentThread().getName());
-        Predicate<Integer> stringPredicate = (i) -> i > 8;
-        Supplier<String> stringSupplier = () -> "jagan";
-        Consumer<String> stringConsumer = (i) -> System.out.println(i);
-        Function<String, Integer> integerStringFunction = (s) -> Integer.valueOf(s);
-        BiFunction<String, String, Integer> stringStringIntegerBiFunction = (s, t) -> Integer.valueOf(s + t);
-        CompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> {
-            try {
-                System.out.println(Thread.currentThread().getName());
+        // ─── 4. thenCompose – chaining (flatMap style) ───
+        CompletableFuture<Integer> composed = CompletableFuture.supplyAsync(() -> 5)
+                .thenCompose(n -> CompletableFuture.supplyAsync(() -> n * 2));
+        System.out.println("4. thenCompose: " + composed.join());    // 10
 
-                //Thread.sleep(1000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return "message";
-        }).thenApplyAsync(s -> {
-            System.out.println(Thread.currentThread().getName());
-            // randomSleep();
-            return s.toUpperCase();
-        });
-        System.out.println(cf.getNow(null));
-        cf.join();
+        // ─── 5. thenCombine – combine two independent CFs ───
+        CompletableFuture<Integer> cf1 = CompletableFuture.supplyAsync(() -> 10);
+        CompletableFuture<Integer> cf2 = CompletableFuture.supplyAsync(() -> 20);
+        int combined = cf1.thenCombine(cf2, Integer::sum).join();
+        System.out.println("5. thenCombine: " + combined);           // 30
 
+        // ─── 6. allOf – wait for multiple CFs ───
+        CompletableFuture<Void> all = CompletableFuture.allOf(cf1, cf2);
+        all.join();
+        System.out.println("6. All done");
     }
 }

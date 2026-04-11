@@ -1,36 +1,32 @@
 package com.ds.algo.designpattern.behavioural.observer;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Concrete Observable – StockMarket notifies all registered observers
+ * whenever the market value changes.
+ */
 public class StockMarket implements Observable {
-    private Vector<Observer> observers;
+    private final List<Observer> observers = new ArrayList<>();
     private float marketValue;
 
-    public StockMarket() {
-        this.observers = new Vector<Observer>();
-    }
+    @Override
+    public void registerObserver(Observer observer) { observers.add(observer); }
 
-    public synchronized void registerObserver(Observer observer) {
-        observers.add(observer);
-    }
+    @Override
+    public void removeObserver(Observer observer) { observers.remove(observer); }
 
-    public synchronized void removeObserver(Observer observer) {
-        observers.remove(observer);
-    }
-
+    @Override
     public void notifyObservers() {
-        for (Observer observer :
-                observers) {
-            observer.update(marketValue);
+        for (Observer o : observers) {
+            o.update(marketValue);
         }
-    }
-
-    public void changeInMarketValue() {
-        notifyObservers();
     }
 
     public void setMarketValue(float marketValue) {
         this.marketValue = marketValue;
-        changeInMarketValue();
+        System.out.println("\n[StockMarket] Value changed to: " + marketValue);
+        notifyObservers();
     }
 }
